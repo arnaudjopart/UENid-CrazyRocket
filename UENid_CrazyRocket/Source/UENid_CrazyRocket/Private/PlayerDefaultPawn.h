@@ -16,6 +16,10 @@ public:
 	APlayerDefaultPawn();
 
 protected:
+	UFUNCTION()
+	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -30,7 +34,13 @@ public:
 	float Impulse;
 	UPROPERTY(EditAnywhere, category = "Movement")
 	float RotationSpeed;
+	UPROPERTY(EditAnywhere, category = "Movement")
+	float MaxLandingSpeed =30;
 
 private:
 	UStaticMeshComponent* Mesh;
+	UFUNCTION(BlueprintCallable)
+	bool OnCollisionTrigger(AActor* Other);
 };
+
+

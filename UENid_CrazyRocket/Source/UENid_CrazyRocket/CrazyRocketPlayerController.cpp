@@ -16,8 +16,6 @@ ACrazyRocketPlayerController::ACrazyRocketPlayerController()
 void ACrazyRocketPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("ACrazyRocketPlayerController::BeginPlay"));
-
 }
 
 void ACrazyRocketPlayerController::KeyPressed(FKey key)
@@ -36,7 +34,6 @@ void ACrazyRocketPlayerController::KeysPressed()
 
 void ACrazyRocketPlayerController::ThrustAction(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayerDefaultPawn"));
 	if (APlayerDefaultPawn* currentPlayer = CastChecked<APlayerDefaultPawn>(GetPawn()))
 	{
 		currentPlayer->AddThrust();
@@ -45,7 +42,6 @@ void ACrazyRocketPlayerController::ThrustAction(const FInputActionValue& InputAc
 
 void ACrazyRocketPlayerController::ApplyRotation(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayerDefaultPawn"));
 	if (APlayerDefaultPawn* currentPlayer = CastChecked<APlayerDefaultPawn>(GetPawn()))
 	{
 		currentPlayer->Rotate(InputActionValue.Get<float>());
@@ -63,7 +59,6 @@ void ACrazyRocketPlayerController::SetupInputComponent()
 		check(EIC);
 		EIC->BindAction(ThurstInputAction, ETriggerEvent::Triggered,this,&ACrazyRocketPlayerController::ThrustAction);
 		EIC->BindAction(RotateInputAction, ETriggerEvent::Triggered,this,&ACrazyRocketPlayerController::ApplyRotation);
-		
 	}
 	
 	//InputComponent->BindKey(EKeys::A,IE_Pressed, this,&ACrazyRocketPlayerController::KeysPressed);

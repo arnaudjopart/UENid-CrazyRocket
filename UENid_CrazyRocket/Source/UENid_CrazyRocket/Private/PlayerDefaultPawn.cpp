@@ -13,17 +13,37 @@ APlayerDefaultPawn::APlayerDefaultPawn()
 
 }
 
+void APlayerDefaultPawn::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("PlayerDefaultPawn::OnHit"));
+}
+
+void APlayerDefaultPawn::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("PlayerDefaultPawn::OnComponentHit"));
+}
+
+/*void APlayerDefaultPawn::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("PlayerDefaultPawn::OnHit"));
+}*/
+
 // Called when the game starts or when spawned
 void APlayerDefaultPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	Mesh = GetComponentByClass<UStaticMeshComponent>();
+	Mesh->OnComponentHit.AddDynamic(this, &APlayerDefaultPawn::OnComponentHit);
 }
 
 // Called every frame
 void APlayerDefaultPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	float speed = Mesh->GetPhysicsLinearVelocity().Length();
+	UE_LOG(LogTemp, Warning, TEXT("PlayerDefaultPawn: %f"),speed);
 
 }
 
@@ -54,4 +74,19 @@ void APlayerDefaultPawn::Rotate(float Direction)
 	CurrentRotation+=FRotator(0,0,stepRotation);
 	Mesh->SetWorldRotation(CurrentRotation);
 	*/
+}
+
+bool APlayerDefaultPawn::OnCollisionTrigger(AActor* Other)
+{
+	
+	if (Mesh->GetPhysicsLinearVelocity().SquaredLength()>pow(MaxLandingSpeed,2))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerDefaultPawn::Destroy"));
+		return false;
+	}
+
+	if (Other->ActorHasTag("StartPlatform")) return false;
+	return true;
+
+	
 }
